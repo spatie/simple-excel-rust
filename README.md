@@ -7,7 +7,7 @@
 
 This package allows you to easily read and write simple Excel and CSV files. It is a Rust port of [spatie/simple-excel](https://github.com/spatie/simple-excel).
 
-CSV reads and writes stream row by row. XLSX writes use constant-memory worksheets backed by temporary files. Spreadsheet reads and ODS writes are not constant-memory. See [memory usage and PHP differences](https://github.com/spatie/simple-excel-rust/blob/main/docs/parity.md).
+CSV reads and writes stream row by row. XLSX writes use constant-memory worksheets backed by temporary files. Spreadsheet reads and ODS writes are not constant-memory. See the memory usage sections in the [reading guide](https://github.com/spatie/simple-excel-rust/blob/main/docs/reading-files.md#memory-usage) and [writing guide](https://github.com/spatie/simple-excel-rust/blob/main/docs/writing-files.md#memory-usage).
 
 ## Support us
 
@@ -63,7 +63,7 @@ writer.close()?;
 # }
 ```
 
-Rust iterators replace the PHP collection interface. Call `close()` to observe write errors; destruction only attempts best-effort finalization.
+Process rows with Rust iterators. Call `close()` to observe write errors; destruction only attempts best-effort finalization.
 
 See the [documentation](https://spatie.be/docs/simple-excel-rust/v1/introduction), [reading guide](https://github.com/spatie/simple-excel-rust/blob/main/docs/reading-files.md) and [writing guide](https://github.com/spatie/simple-excel-rust/blob/main/docs/writing-files.md).
 

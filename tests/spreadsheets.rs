@@ -1,4 +1,6 @@
 //! Public read/write contracts, using PHP fixtures and real spreadsheet engines.
+//! Fixtures originate from spatie/simple-excel at b6cea2b77b609770642a1cc2d91df5a1eb868fae
+//! under its MIT license: <https://github.com/spatie/simple-excel/tree/b6cea2b77b609770642a1cc2d91df5a1eb868fae/tests/stubs>.
 
 use std::{
     fs,

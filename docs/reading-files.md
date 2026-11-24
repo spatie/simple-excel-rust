@@ -30,7 +30,7 @@ for row in rows {
 # }
 ```
 
-Rows keep column order. Use `row["email"]` for a known header, `row.get("email")` for an optional header, or `row[0]` for a numeric column. Values are typed `Value` variants; CSV values are strings. Short rows are padded with empty strings, and columns beyond the headers are discarded. Duplicate header names keep the last value at the first key's position, as in PHP arrays.
+Rows keep column order. Use `row["email"]` for a known header, `row.get("email")` for an optional header, or `row[0]` for a numeric column. Indexing a missing key panics; `get` returns `None`. Values are typed `Value` variants; CSV values are strings. With headers, short rows are padded with empty strings, and extra columns are discarded. Duplicate header names keep the last value at the first key's position.
 
 ### Reading an Excel file
 
@@ -38,9 +38,11 @@ Reading an Excel file is identical to reading a CSV file. Just make sure that th
 
 Use `SimpleExcelReader::create_with_type(path, FileType::Csv)` when the path has no extension or a different one. `FileType` is exported by this crate.
 
+Reader configuration consumes and returns the reader. Files open when you request rows, headers or sheet metadata, not when you call `create`.
+
 ### Working with iterators
 
-`get_rows` returns an iterator of `Result<Row, Error>`. Rust's iterator adapters replace the PHP package's collection methods. CSV reads are lazy; spreadsheet iterators still have the [engine's memory cost](parity.md).
+`get_rows` returns an iterator of `Result<Row, Error>`. Process each row with a `for` loop or Rust's iterator adapters. Read errors terminate the iterator.
 
 Here's a quick, silly example where we only want to process rows that have a `first_name` that contains more than 5 characters.
 
@@ -61,6 +63,14 @@ for row in rows {
 ```
 
 Use `collect::<Result<Vec<_>, _>>()?` when you deliberately want all rows in memory. Do not use `filter_map(Result::ok)` unless discarding read errors is intentional. Each `get_rows()` call opens a fresh independent iterator, with the same skip and take settings. Drop the iterator to close the file; no reader `close()` call is needed.
+
+### Memory usage
+
+CSV reads stream through `csv` and `encoding_rs_io`. Memory depends on the current record and fixed-size buffers, not the total row count. Encoding conversion also happens incrementally.
+
+XLSX reads use `calamine`, which loads the selected sheet and shared strings into memory. Keeping formulas or preserving date formatting also loads formula or style ranges. Iterating avoids a second full copy of the sheet, but does not make XLSX reading constant-memory.
+
+ODS reads load the entire workbook into memory. For inputs too large to fit in memory, use CSV. Calling `collect` retains the returned rows in memory for every format.
 
 ### Reading a file without headers
 
@@ -154,7 +164,7 @@ let rows = SimpleExcelReader::create(path_to_xlsx)?
 
 ### Trimming headers
 
-If the header row contains additional characters, use `trim_header_row()`. The default characters match PHP's `trim`: space, tab, newline, carriage return, NUL and vertical tab. `trim_header_row_with("a..z")` accepts a character set with ASCII ranges. Unicode characters are treated as characters rather than individual UTF-8 bytes.
+If the header row contains additional characters, use `trim_header_row()`. It removes space, tab, newline, carriage return, NUL and vertical tab. `trim_header_row_with("a..z")` accepts a character set with ASCII ranges. Unicode characters are treated as characters rather than individual UTF-8 bytes.
 
 ### Convert headers to snake_case
 
@@ -204,11 +214,13 @@ let rows = SimpleExcelReader::create(path_to_csv)?
 
 ### Limiting the result set
 
-The `take` method limits the number of data rows. The `skip` method defines where to start after the header. For example, `.skip(10).take(5)` returns data rows 11 through 15. Both settings are reapplied on every `get_rows()` call.
+The `take` method limits the number of data rows. The `skip` method defines where to start after the header. For example, `.skip(10).take(5)` returns data rows 11 through 15. Both settings are reapplied on every `get_rows()` call. `take(0)` returns no rows.
 
 ### Reading cells that contain formulas
 
 Normally, cells containing formulas return the cached computed value stored in the file. Use `keep_formulas()` to return `Value::Formula` strings instead. This package does not evaluate formulas. Files without cached results may return an empty value or the engine's stored default.
+
+Formula strings start with `=` in both XLSX and ODS; the ODS namespace prefix is removed. Spreadsheet cell errors, such as `#DIV/0!`, are returned as `Value::Error`.
 
 ### Preserve date formatting
 
@@ -226,11 +238,13 @@ let rows = SimpleExcelReader::create(path_to_xlsx)?
 # }
 ```
 
-Date formatting uses `ssfmt`'s Excel number-format support. It is not a promise to reproduce every locale-specific Excel display rule. Invalid date values or unparseable date formats return errors rather than silently changing their type. As in PHP, the date-format option only applies to XLSX.
+Date formatting uses `ssfmt`'s Excel number-format support. It does not reproduce every locale-specific Excel display rule. Built-in format IDs 14, 22 and 47 display as `m/d/yyyy`, `m/d/yyyy h:mm` and `mm:ss.0`. Invalid date values or unparseable date formats return errors. The date-format option only applies to XLSX.
 
 ### Preserve empty rows
 
 Use `preserve_empty_rows()` to preserve spreadsheet empty rows within the used range, including leading empty rows. Trailing rows beyond that range cannot be recovered. CSV blank lines are ignored.
+
+Leading and interior empty cells keep their column positions. Unkeyed spreadsheet rows omit trailing blank cells; keyed rows pad missing values with empty strings.
 
 ### Using an alternative delimiter, enclosure or encoding
 

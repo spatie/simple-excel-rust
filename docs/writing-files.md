@@ -32,9 +32,11 @@ Jane,Doe
 
 Pair arrays become keyed rows. The first keyed row on each sheet supplies the automatic header. Later rows are written in input order, not reordered by key. Use `Value` for mixed-type rows. Text is always literal, including text beginning with `=`; use `Value::Formula` explicitly when you want a spreadsheet formula. CSV has no formula cell type, so spreadsheet applications may still interpret exported text as formulas when opening a CSV. Sanitize untrusted CSV exports for your destination application.
 
+Spreadsheet formulas are stored with a cached result of zero until a spreadsheet application recalculates them. `Value::Error` writes its displayed text, not an error cell.
+
 ### Manually set the header from array
 
-Instead of automatically detecting a header row, you can set it manually. `Row::new()` creates a raw row, like the PHP engine's `Row` entity, and does not generate headers.
+Instead of automatically detecting a header row, you can set it manually. `Row::new()` creates an unkeyed row and does not generate headers.
 
 ```rust
 # use spatie_simple_excel::{SimpleExcelWriter, Row};
@@ -58,7 +60,15 @@ Writing an Excel file is identical to writing a CSV. Just make sure that the pat
 
 The `close` method finalizes the archive. Call it before reading the file and to receive finalization errors. Drop attempts finalization too, but cannot report errors. Repeated `close()` calls succeed; adding rows after closing returns `Error::Closed`. Failed writes may leave partial output. Writing is not transactional.
 
-XLSX uses constant-memory worksheets and temporary disk files. Cells must be written in increasing row order. The wrapper does this automatically. The Excel limits are 1,048,576 rows and 16,384 columns per sheet; create a new sheet before reaching the row limit. Spreadsheet numbers are floating-point, so integers beyond the exact f64 range may lose precision; write identifiers as text.
+The Excel limits are 1,048,576 rows and 16,384 columns per sheet; create a new sheet before reaching the row limit. Spreadsheet numbers must be finite. Integers beyond the exact f64 range may lose precision; write identifiers as text.
+
+### Memory usage
+
+CSV writes stream through `csv`, with memory proportional to the current record and output buffers. `add_rows` consumes its input incrementally rather than collecting it.
+
+XLSX uses `rust_xlsxwriter` constant-memory worksheets. Previous rows spool to temporary files rather than accumulating in RAM. Formats, workbook metadata and ZIP finalization still allocate memory, and temporary disk usage grows with the export. Cells must be written in increasing row order; the wrapper handles this automatically. Native engine access cannot edit rows that have already been flushed.
+
+ODS writes use `spreadsheet-ods` and hold the workbook in memory. Choose CSV or XLSX for large exports that need bounded row-data memory.
 
 ### Streaming an Excel file to the browser
 
@@ -83,7 +93,7 @@ writer.to_browser()?;
 
 CSV output streams directly. Use `flush()` periodically for large CSV streams. XLSX and ODS must finish their ZIP archive first; downloads spool to a temporary file and copy to your output at close. Calling `flush()` does not stream a partial spreadsheet archive. The sink must be owned (`'static`); use a file, stdout handle or an owned adapter for your web framework.
 
-Writer configuration callbacks become ordinary Rust calls on `get_writer()` or `get_current_sheet()` before adding rows.
+Configure the native engine through `get_writer()` or `get_current_sheet()` before adding rows.
 
 ### Writing multiple rows at once
 
@@ -126,7 +136,7 @@ writer.close()?;
 
 ### Adding layout
 
-The `rust_xlsxwriter::Format` builder formats XLSX rows. It is exported as `Format`. CSV ignores formatting. ODS uses native `spreadsheet_ods` styles through `get_writer()` rather than XLSX formats.
+The `rust_xlsxwriter::Format` builder formats XLSX rows. It is exported as `Format`. CSV ignores formatting. ODS uses native `spreadsheet_ods` styles through `get_writer()`; supplying an XLSX format to ODS returns an error.
 
 ```rust
 # use spatie_simple_excel::{SimpleExcelWriter, Row};
@@ -176,7 +186,7 @@ writer.close()?;
 # }
 ```
 
-Native engine column and row coordinates start at zero, unlike the PHP engine's one-based column-width helpers.
+Native engine column and row coordinates start at zero.
 
 ### Creating additional sheets
 
@@ -201,7 +211,7 @@ Pass `None` for names such as `Sheet2`. CSV does not support sheet naming or add
 
 ### Using an alternative delimiter
 
-Configure the delimiter at creation, before the file is opened. There is no writer `use_delimiter()` method in the PHP implementation either; its README example for that method is not executable.
+Configure the delimiter at creation, before the file is opened.
 
 ```rust
 # use spatie_simple_excel::SimpleExcelWriter;

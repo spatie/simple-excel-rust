@@ -1,6 +1,6 @@
 ---
 title: Testing
-weight: 7
+weight: 6
 ---
 
 Run these checks from the package directory:

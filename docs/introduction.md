@@ -3,7 +3,7 @@ title: Introduction
 weight: 1
 ---
 
-This package allows you to easily read and write simple Excel and CSV files. CSV iterators and constant-memory XLSX writers keep row data out of memory. XLSX reading loads the selected sheet and shared strings; ODS reading and writing load the workbook. See [memory usage](parity.md).
+This package allows you to easily read and write simple Excel and CSV files. CSV reads and writes stream row by row, and XLSX writes spool rows to temporary files. XLSX reading loads the selected sheet and shared strings; ODS reading and writing load the workbook. The [reading](reading-files.md#memory-usage) and [writing](writing-files.md#memory-usage) guides explain memory and disk usage for each format.
 
 Here's an example on how to read an Excel or CSV.
 
