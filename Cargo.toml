@@ -13,6 +13,10 @@ keywords = ["spatie", "excel", "csv", "xlsx", "ods"]
 categories = ["encoding", "parser-implementations"]
 include = ["/src/", "/tests/", "/build.rs", "/docs/", "/README.md", "/LICENSE.md", "/CHANGELOG.md", "/CONTRIBUTING.md", "/SECURITY.md", "/Cargo.lock"]
 
+[workspace]
+members = ["crates/spatie-spreadsheet-ods"]
+resolver = "3"
+
 [dependencies]
 calamine = { version = "0.38", features = ["chrono"] }
 chrono = { version = "0.4", default-features = false, features = ["std"] }
@@ -21,7 +25,7 @@ encoding_rs = "0.8"
 encoding_rs_io = "0.1"
 jiff = { version = "1", default-features = false, features = ["std"] }
 rust_xlsxwriter = { version = "0.104", features = ["chrono", "constant_memory"] }
-spreadsheet-ods = { version = "1.0.4", default-features = false }
+spreadsheet-ods = { package = "spatie-spreadsheet-ods", version = "1.0.0", path = "crates/spatie-spreadsheet-ods", default-features = false }
 ssfmt = "0.1.2"
 tempfile = "3"
 thiserror = "2"

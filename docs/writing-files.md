@@ -68,7 +68,7 @@ CSV writes stream through `csv`, with memory proportional to the current record 
 
 XLSX uses `rust_xlsxwriter` constant-memory worksheets. Previous rows spool to temporary files rather than accumulating in RAM. Formats, workbook metadata and ZIP finalization still allocate memory, and temporary disk usage grows with the export. Cells must be written in increasing row order; the wrapper handles this automatically. Native engine access cannot edit rows that have already been flushed.
 
-ODS writes use `spreadsheet-ods` and hold the workbook in memory. Choose CSV or XLSX for large exports that need bounded row-data memory.
+ODS writes use `spatie-spreadsheet-ods` and hold the workbook in memory. Choose CSV or XLSX for large exports that need bounded row-data memory.
 
 ### Streaming an Excel file to the browser
 

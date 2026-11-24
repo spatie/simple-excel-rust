@@ -7,11 +7,11 @@ Run these checks from the package directory:
 
 ```sh
 cargo fmt --all -- --check
-cargo clippy --locked --all-targets --all-features -- -D warnings
-cargo test --locked --all-targets --all-features
-cargo test --locked --doc --all-features
-cargo doc --locked --no-deps --all-features
-cargo package --locked
+cargo clippy --workspace --locked --all-targets --all-features -- -D warnings
+cargo test --workspace --locked --all-targets --all-features
+cargo test --workspace --locked --doc --all-features
+cargo doc --workspace --locked --no-deps --all-features
+cargo package --workspace --locked
 ```
 
 Set `RUSTDOCFLAGS` to `-D warnings` when running the documentation commands. In POSIX shells, prefix each command with `RUSTDOCFLAGS='-D warnings'`. In PowerShell, first run `$env:RUSTDOCFLAGS = '-D warnings'`.
@@ -22,8 +22,8 @@ Check the minimum supported Rust version:
 
 ```sh
 rustup toolchain install 1.89.0 --profile minimal
-cargo +1.89.0 test --locked --all-targets --all-features
-cargo +1.89.0 test --locked --doc --all-features
+cargo +1.89.0 test --workspace --locked --all-targets --all-features
+cargo +1.89.0 test --workspace --locked --doc --all-features
 ```
 
 Check security advisories:

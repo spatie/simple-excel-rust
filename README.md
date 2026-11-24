@@ -70,8 +70,8 @@ See the [documentation](https://spatie.be/docs/simple-excel-rust/v1/introduction
 ## Testing
 
 ```sh
-cargo test --locked --all-targets --all-features
-cargo test --locked --doc --all-features
+cargo test --workspace --locked --all-targets --all-features
+cargo test --workspace --locked --doc --all-features
 ```
 
 See [all quality checks](https://github.com/spatie/simple-excel-rust/blob/main/docs/testing.md). The README and Markdown guides are tested by rustdoc, including setup on hidden `# ` lines.
@@ -93,6 +93,7 @@ Report vulnerabilities privately using the instructions in [SECURITY.md](https:/
 ## Credits
 
 - [Freek Van der Herten](https://github.com/freekmurze)
+- [Thomas Scharler](https://github.com/thscharler), author of the [upstream ODS engine](https://github.com/thscharler/spreadsheet-ods)
 - [All contributors](https://github.com/spatie/simple-excel-rust/graphs/contributors)
 
 ## License

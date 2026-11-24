@@ -1,0 +1,43 @@
+[package]
+name = "spatie-spreadsheet-ods"
+version = "1.0.0"
+authors = ["Thomas Scharler <thscharler@gmail.com>", "Freek Van der Herten <freek@spatie.be>"]
+edition = "2024"
+rust-version = "1.89"
+description = "Read and write ODS files; Spatie's dependency-patched copy of spreadsheet-ods"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/spatie/simple-excel-rust"
+documentation = "https://docs.rs/spatie-spreadsheet-ods"
+readme = "README.md"
+keywords = ["ods", "spreadsheet", "opendocument"]
+categories = ["parser-implementations"]
+include = ["/src/", "/tests/", "/crate.md", "/README.md", "/README.upstream.md", "/LICENSE-MIT", "/LICENSE-APACHE"]
+
+[lib]
+name = "spreadsheet_ods"
+
+[features]
+default = ["rust_decimal", "all_locales"]
+rust_decimal = ["dep:rust_decimal"]
+check_xml = []
+all_locales = ["locale_cs_CZ", "locale_de_AT", "locale_en_US"]
+locale_cs_CZ = []
+locale_de_AT = []
+locale_en_US = []
+dump_xml = []
+dump_unused = []
+
+[dependencies]
+rust_decimal = { version = "1.36", optional = true }
+color-rs2 = "0.9.0"
+string_cache = "0.9"
+nom = "7.1"
+nom_locate = "4.2"
+icu_locale_core = "2.0"
+lazy_static = "1.5"
+kparse = "3.0"
+base64 = "0.22"
+quick-xml = { version = "0.41", features = ["encoding"] }
+zip = { version = "9.0.5", default-features = false, features = ["deflate", "time"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "alloc"] }
+get-size2 = { version = "0.7", features = ["derive"] }
