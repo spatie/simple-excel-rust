@@ -1,4 +1,4 @@
-# spatie-simple-excel
+# Read and write simple Excel and CSV files
 
 [![Latest version on crates.io](https://img.shields.io/crates/v/spatie-simple-excel.svg?style=flat-square)](https://crates.io/crates/spatie-simple-excel)
 [![Tests](https://img.shields.io/github/actions/workflow/status/spatie/simple-excel-rust/ci.yml?branch=main&style=flat-square)](https://github.com/spatie/simple-excel-rust/actions/workflows/ci.yml)
