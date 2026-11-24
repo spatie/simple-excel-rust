@@ -1,6 +1,6 @@
 ---
 title: v1
-slogan: {{description_quoted}}
-githubUrl: https://github.com/{{owner}}/{{repository}}
+slogan: "Read and write simple Excel and CSV files"
+githubUrl: https://github.com/spatie/simple-excel-rust
 branch: main
 ---

@@ -5,15 +5,12 @@ weight: 3
 
 Requires Rust 1.89 or newer. Install Rust using [rustup](https://rustup.rs/).
 
-Once the crate is published, add it to your application:
+Add it to your application:
 
 ```sh
-cargo add {{crate_name}}
+cargo add spatie-simple-excel
 ```
 
-Before publication, use a local path dependency:
+No office application, PHP runtime or external executable is required. The package uses `csv`, `calamine`, `rust_xlsxwriter` and `spreadsheet-ods` for file handling.
 
-```toml
-[dependencies]
-{{crate_name}} = { path = "../{{repository}}" }
-```
+XLSX exports use temporary disk space for constant-memory worksheets. XLSX and ODS downloads need a writable temporary directory until the completed archive can be copied to your output.

@@ -1,19 +1,30 @@
 [package]
-name = {{crate_name_quoted}}
-version = "0.1.0"
+name = "spatie-simple-excel"
+version = "1.0.0"
 edition = "2024"
 rust-version = "1.89"
-authors = [{{author_quoted}}]
-description = {{description_quoted}}
+authors = ["Freek Van der Herten <freek@spatie.be>"]
+description = "Read and write simple Excel and CSV files"
 license = "MIT"
-repository = "https://github.com/{{owner}}/{{repository}}"
-documentation = "https://docs.rs/{{crate_name}}"
+repository = "https://github.com/spatie/simple-excel-rust"
+documentation = "https://docs.rs/spatie-simple-excel"
 readme = "README.md"
-keywords = ["spatie"]
-categories = ["development-tools"]
-include = ["/src/", "/tests/*.rs", "/build.rs", "/docs/", "/README.md", "/LICENSE.md", "/CHANGELOG.md", "/CONTRIBUTING.md", "/SECURITY.md", "/Cargo.lock"]
+keywords = ["spatie", "excel", "csv", "xlsx", "ods"]
+categories = ["encoding", "parser-implementations"]
+include = ["/src/", "/tests/", "/build.rs", "/docs/", "/README.md", "/LICENSE.md", "/CHANGELOG.md", "/CONTRIBUTING.md", "/SECURITY.md", "/Cargo.lock"]
 
 [dependencies]
+calamine = { version = "0.38", features = ["chrono"] }
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+csv = "1.4"
+encoding_rs = "0.8"
+encoding_rs_io = "0.1"
+jiff = { version = "1", default-features = false, features = ["std"] }
+rust_xlsxwriter = { version = "0.104", features = ["chrono", "constant_memory"] }
+spreadsheet-ods = { version = "1.0.4", default-features = false }
+ssfmt = "0.1.2"
+tempfile = "3"
+thiserror = "2"
 
 [lints.rust]
 unsafe_code = "forbid"
