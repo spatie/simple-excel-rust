@@ -64,6 +64,8 @@ for row in rows {
 
 Use `collect::<Result<Vec<_>, _>>()?` when you deliberately want all rows in memory. Do not use `filter_map(Result::ok)` unless discarding read errors is intentional. Each `get_rows()` call opens a fresh independent iterator, with the same skip and take settings. Drop the iterator to close the file; no reader `close()` call is needed.
 
+<a id="memory-usage"></a>
+
 ### Memory usage
 
 CSV reads stream through `csv` and `encoding_rs_io`. Memory depends on the current record and fixed-size buffers, not the total row count. Encoding conversion also happens incrementally.

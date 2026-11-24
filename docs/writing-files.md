@@ -62,6 +62,8 @@ The `close` method finalizes the archive. Call it before reading the file and to
 
 The Excel limits are 1,048,576 rows and 16,384 columns per sheet; create a new sheet before reaching the row limit. Spreadsheet numbers must be finite. Integers beyond the exact f64 range may lose precision; write identifiers as text.
 
+<a id="memory-usage"></a>
+
 ### Memory usage
 
 CSV writes stream through `csv`, with memory proportional to the current record and output buffers. `add_rows` consumes its input incrementally rather than collecting it.
